@@ -22,7 +22,8 @@ export default function ProviderProfile() {
     service_area_km: null,
     accepts_emergency: false,
   });
-  const [catsStr, setCatsStr] = useState<string>("");
+  const [categories, setCategories] = useState<{ slug: string; name: string }[]>([]);
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [msg, setMsg] = useState<string>("");
 
@@ -36,13 +37,17 @@ export default function ProviderProfile() {
         return;
       }
       setUid(user.id);
-      const { data, error } = await supabase
-        .from("providers")
-        .select(
-          "id, display_name, city, uf, hourly_rate, service_area_km, accepts_emergency, provider_categories(category_slug)"
-        )
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const [provRes, catRes] = await Promise.all([
+        supabase
+          .from("providers")
+          .select(
+            "id, display_name, city, uf, hourly_rate, service_area_km, accepts_emergency, provider_categories(category_slug)"
+          )
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase.from("categories").select("slug, name"),
+      ]);
+      const { data, error } = provRes;
       if (error) {
         setMsg(error.message);
       }
@@ -50,10 +55,14 @@ export default function ProviderProfile() {
         const pc = (data as any).provider_categories as {
           category_slug: string;
         }[] | null;
-        setCatsStr(pc?.map((c) => c.category_slug).join(",") || "");
+        setSelectedCats(pc?.map((c) => c.category_slug) || []);
         const { provider_categories, ...rest } = data as any;
         setProv(rest as Provider);
       }
+      if (catRes.error) {
+        setMsg(catRes.error.message);
+      }
+      setCategories(catRes.data || []);
       setLoading(false);
     })();
   }, []);
@@ -79,10 +88,7 @@ export default function ProviderProfile() {
     const provider_id = up.id as string;
 
     // sync categories
-    const slugs = catsStr
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const slugs = selectedCats;
     await supabase
       .from("provider_categories")
       .delete()
@@ -168,11 +174,30 @@ export default function ProviderProfile() {
           />
           Atende emergências
         </label>
-        <input
-          placeholder="Categorias (slugs, separadas por vírgula)"
-          value={catsStr}
-          onChange={(e) => setCatsStr(e.target.value)}
-        />
+        <div>
+          <p style={{ margin: "8px 0 4px" }}>Categorias</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {categories.map((c) => (
+              <label
+                key={c.slug}
+                style={{ display: "flex", gap: 4, alignItems: "center" }}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedCats.includes(c.slug)}
+                  onChange={(e) =>
+                    setSelectedCats((prev) =>
+                      e.target.checked
+                        ? [...prev, c.slug]
+                        : prev.filter((s) => s !== c.slug)
+                    )
+                  }
+                />
+                {c.name || c.slug}
+              </label>
+            ))}
+          </div>
+        </div>
         <button disabled={disabled} onClick={save}>
           Salvar
         </button>
