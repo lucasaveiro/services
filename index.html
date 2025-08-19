@@ -1,0 +1,6 @@
+<!doctype html> <html lang="pt-BR"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <title>Marketplace MVP</title> </head> <body> <div id="root"></div> <script type="module" src="/src/main.tsx"></script> </body> </html> END_FILE BEGIN_FILE src/lib/supabase.ts import { createClient } from "@supabase/supabase-js";
+
+const url = import.meta.env.VITE_SUPABASE_URL as string;
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+export const supabase = createClient(url, key);
