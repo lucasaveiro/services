@@ -12,8 +12,9 @@ VITE_SUPABASE_URL="https://your-project.supabase.co"
 VITE_SUPABASE_ANON_KEY="YOUR_ANON_PUBLIC_KEY"
 ```
 
-Without valid credentials the application will still load but any Supabase
-functionality will be disabled.
+The application requires valid credentials. If they are missing the build
+will throw an error and authentication features such as the magic link login
+will not work.
 
 ## Scripts
 
