@@ -30,38 +30,21 @@ export default function Login() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 420,
-        margin: "40px auto",
-        padding: "16px",
-        border: "1px solid #eee",
-        borderRadius: 8,
-      }}
-    >
-      <h2>Login</h2>
-      <p>Receba um link mágico por e-mail.</p>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 8 }}>
+    <div className="max-w-md mx-auto mt-10 p-4 border border-gray-200 rounded-lg">
+      <h2 className="text-xl font-semibold">Login</h2>
+      <p className="text-gray-700">Receba um link mágico por e-mail.</p>
+      <form onSubmit={onSubmit} className="grid gap-2 mt-4">
         <input
           type="email"
           required
           placeholder="seu@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{
-            padding: "8px",
-            border: "1px solid #ccc",
-            borderRadius: 4,
-          }}
+          className="p-2 border border-gray-300 rounded"
         />
         <button
           disabled={sending}
-          style={{
-            display: "inline-flex",
-            gap: 8,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
         >
           {sending && <Spinner />} Enviar link de login
         </button>

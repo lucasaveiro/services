@@ -39,21 +39,21 @@ setTimes(""); setBudget("");
 };
 
 return (
-    <div style={{maxWidth:560,margin:"24px auto",padding:16,border:"1px solid #eee",borderRadius:8}}>
-    <h2>Novo Pedido de Orçamento</h2>
-    <form onSubmit={submit} style={{display:"grid",gap:8}}>
-    <input placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)} required/>
-    <textarea placeholder="Descrição" value={description} onChange={e=>setDescription(e.target.value)} required rows={4}/>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 100px",gap:8}}>
-    <input placeholder="Cidade" value={city} onChange={e=>setCity(e.target.value)} required/>
-    <input placeholder="UF" value={uf} onChange={e=>setUf(e.target.value)} required/>
+    <div className="max-w-xl mx-auto mt-6 p-4 border border-gray-200 rounded-lg">
+    <h2 className="text-xl font-semibold">Novo Pedido de Orçamento</h2>
+    <form onSubmit={submit} className="grid gap-2 mt-4">
+    <input className="p-2 border border-gray-300 rounded" placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)} required/>
+    <textarea className="p-2 border border-gray-300 rounded" placeholder="Descrição" value={description} onChange={e=>setDescription(e.target.value)} required rows={4}/>
+    <div className="grid grid-cols-[1fr_100px] gap-2">
+    <input className="p-2 border border-gray-300 rounded" placeholder="Cidade" value={city} onChange={e=>setCity(e.target.value)} required/>
+    <input className="p-2 border border-gray-300 rounded" placeholder="UF" value={uf} onChange={e=>setUf(e.target.value)} required/>
     </div>
-    <input placeholder="preferred_times (CSV ISO8601)" value={times} onChange={e=>setTimes(e.target.value)}/>
-    <input type="number" placeholder="budget_max (opcional)" value={budget} onChange={e=>setBudget(e.target.value?Number(e.target.value):"")}/>
-    <button disabled={!uid}>Enviar</button>
+    <input className="p-2 border border-gray-300 rounded" placeholder="preferred_times (CSV ISO8601)" value={times} onChange={e=>setTimes(e.target.value)}/>
+    <input className="p-2 border border-gray-300 rounded" type="number" placeholder="budget_max (opcional)" value={budget} onChange={e=>setBudget(e.target.value?Number(e.target.value):"")}/>
+    <button disabled={!uid} className="px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-50">Enviar</button>
     </form>
-    {msg && <p style={{fontSize:12,color:"#555"}}>{msg}</p>}
-    {!uid && <p style={{color:"crimson"}}>Faça login para criar um pedido.</p>}
+    {msg && <p className="text-xs text-gray-600">{msg}</p>}
+    {!uid && <p className="text-red-600">Faça login para criar um pedido.</p>}
     </div>
 );
 }

@@ -14,7 +14,7 @@ export default function Protected({ children }: { children: ReactNode }) {
   }, []);
   if (authed === null)
     return (
-      <div style={{ display: "grid", placeItems: "center", padding: "2rem" }}>
+      <div className="grid place-items-center p-8">
         <Spinner />
       </div>
     );
