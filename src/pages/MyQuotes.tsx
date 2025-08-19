@@ -41,7 +41,8 @@ return (
         <div><b>{q.category_slug}</b> — {q.city}/{q.uf} · {new Date(q.created_at).toLocaleString()}</div>
         <div style={{fontSize:12,color:"#555"}}>{q.description}</div>
         <div style={{fontSize:12,marginTop:4}}>
-        {q.budget_max!=null?Orçamento máx: R$ ${q.budget_max}:"Sem orçamento"}
+        {q.budget_max != null ? "Orçamento máx: R$ " + q.budget_max : "Sem orçamento"}
+            
         </div>
         <div style={{fontSize:12,marginTop:4}}>
         Preferências: {(q.preferred_times||[]).map((t,i)=>typeof t==="string"?t:JSON.stringify(t)).join(", ")||"-"}
