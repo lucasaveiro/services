@@ -31,7 +31,7 @@ description, city, uf: uf.toUpperCase().slice(0,2),
 preferred_times,
 budget_max: budget === "" ? null : Number(budget)
 }]);
-setMsg(error ? Erro: ${error.message} : "Pedido enviado.");
+setMsg(error ? `Erro: ${error.message}` : "Pedido enviado.");
 if(!error){
 setCategory(""); setDescription(""); setCity(""); setUf("");
 setTimes(""); setBudget("");
