@@ -49,7 +49,7 @@ return (
     <li key={r.id} style={{border:"1px solid #eee",borderRadius:8,padding:12}}>
     <b>{r.display_name}</b> — {r.city}/{r.uf}
     <div style={{fontSize:12,color:"#555"}}>
-    {r.hourly_rate!=null?R$ ${r.hourly_rate}:"Preço sob consulta"} ·
+    {r.hourly_rate != null ? `R$ ${r.hourly_rate}` : "Preço sob consulta"} ·
     Área {r.service_area_km??"-"} km ·
     Emergência {r.accepts_emergency?"Sim":"Não"}
     </div>
