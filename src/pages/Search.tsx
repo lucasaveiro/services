@@ -35,25 +35,25 @@ setLoading(false);
 };
 
 return (
-    <div style={{maxWidth:720,margin:"24px auto",padding:16}}>
-    <h2>Buscar Prestadores</h2>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr auto",gap:8,alignItems:"center"}}>
-    <input placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)}/>
-    <input placeholder="city" value={city} onChange={e=>setCity(e.target.value)}/>
-    <input type="number" placeholder="radius_km (ignorado)" value={radiusKm} onChange={e=>setRadiusKm(e.target.value?Number(e.target.value):"")}/>
-    <button onClick={run} disabled={loading}>{loading?"Buscando...":"Buscar"}</button>
+    <div className="max-w-3xl mx-auto mt-6 p-4">
+    <h2 className="text-xl font-semibold">Buscar Prestadores</h2>
+    <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-center mt-4">
+    <input className="p-2 border border-gray-300 rounded" placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)}/>
+    <input className="p-2 border border-gray-300 rounded" placeholder="city" value={city} onChange={e=>setCity(e.target.value)}/>
+    <input className="p-2 border border-gray-300 rounded" type="number" placeholder="radius_km (ignorado)" value={radiusKm} onChange={e=>setRadiusKm(e.target.value?Number(e.target.value):"")}/>
+    <button onClick={run} disabled={loading} className="px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-50">{loading?"Buscando...":"Buscar"}</button>
     </div>
-    {err && <p style={{color:"crimson"}}>{err}</p>}
-    <ul style={{marginTop:12,display:"grid",gap:8,listStyle:"none",padding:0}}>
+    {err && <p className="text-red-600">{err}</p>}
+    <ul className="mt-3 grid gap-2 list-none p-0">
     {results.map(r=>(
-    <li key={r.id} style={{border:"1px solid #eee",borderRadius:8,padding:12}}>
+    <li key={r.id} className="border border-gray-200 rounded-lg p-3">
     <b>{r.display_name}</b> — {r.city}/{r.uf}
-    <div style={{fontSize:12,color:"#555"}}>
+    <div className="text-xs text-gray-600">
     {r.hourly_rate != null ? `R$ ${r.hourly_rate}` : "Preço sob consulta"} ·
     Área {r.service_area_km??"-"} km ·
     Emergência {r.accepts_emergency?"Sim":"Não"}
     </div>
-    <div style={{fontSize:12,marginTop:4}}>
+    <div className="text-xs mt-1">
     Categorias: {(r.provider_categories||[]).map(c=>c.category_slug).join(", ")||"-"}
     </div>
     </li>

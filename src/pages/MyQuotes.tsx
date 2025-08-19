@@ -32,19 +32,19 @@ setLoading(false);
 if(loading) return null;
 
 return (
-    <div style={{maxWidth:800,margin:"24px auto",padding:16}}>
-        <h2>Meus Pedidos</h2>
-        {err && <p style={{color:"crimson"}}>{err}</p>}
-        <ul style={{listStyle:"none",padding:0,display:"grid",gap:8}}>
+    <div className="max-w-3xl mx-auto mt-6 p-4">
+        <h2 className="text-xl font-semibold">Meus Pedidos</h2>
+        {err && <p className="text-red-600">{err}</p>}
+        <ul className="grid gap-2 list-none p-0 mt-4">
         {items.map(q=>(
-        <li key={q.id} style={{border:"1px solid #eee",borderRadius:8,padding:12}}>
+        <li key={q.id} className="border border-gray-200 rounded-lg p-3">
         <div><b>{q.category_slug}</b> — {q.city}/{q.uf} · {new Date(q.created_at).toLocaleString()}</div>
-        <div style={{fontSize:12,color:"#555"}}>{q.description}</div>
-        <div style={{fontSize:12,marginTop:4}}>
+        <div className="text-xs text-gray-600">{q.description}</div>
+        <div className="text-xs mt-1">
         {q.budget_max != null ? "Orçamento máx: R$ " + q.budget_max : "Sem orçamento"}
-            
+
         </div>
-        <div style={{fontSize:12,marginTop:4}}>
+        <div className="text-xs mt-1">
         Preferências: {(q.preferred_times||[]).map((t,i)=>typeof t==="string"?t:JSON.stringify(t)).join(", ")||"-"}
         </div>
         </li>

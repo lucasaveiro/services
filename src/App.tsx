@@ -11,9 +11,9 @@ import MyQuotes from "./pages/MyQuotes";
 import Protected from "./routes/Protected";
 
 const Home = () => (
-  <div style={{ padding: "1rem" }}>
-    <h1>Home</h1>
-    <p>Marketplace de Serviços — MVP.</p>
+  <div className="p-4">
+    <h1 className="text-2xl font-bold">Home</h1>
+    <p className="text-gray-700">Marketplace de Serviços — MVP.</p>
   </div>
 );
 
@@ -24,38 +24,40 @@ function Navbar({ session }: { session: Session | null }) {
     nav("/");
   };
   return (
-    <nav
-      style={{
-        display: "flex",
-        gap: 12,
-        padding: "8px 12px",
-        borderBottom: "1px solid #ddd",
-        alignItems: "center",
-      }}
-    >
-      <Link to="/">Home</Link>
-      <Link to="/search">Buscar</Link>
-      <Link to="/dashboard">Dashboard</Link>
-      <Link to="/provider">Meu Perfil</Link>
-      <Link to="/quotes/new">Novo Pedido</Link>
-      <Link to="/quotes">Meus Pedidos</Link>
-      <div
-        style={{
-          marginLeft: "auto",
-          display: "flex",
-          gap: 12,
-          alignItems: "center",
-        }}
-      >
+    <nav className="flex items-center gap-3 px-3 py-2 border-b border-gray-300">
+      <Link to="/" className="hover:underline">
+        Home
+      </Link>
+      <Link to="/search" className="hover:underline">
+        Buscar
+      </Link>
+      <Link to="/dashboard" className="hover:underline">
+        Dashboard
+      </Link>
+      <Link to="/provider" className="hover:underline">
+        Meu Perfil
+      </Link>
+      <Link to="/quotes/new" className="hover:underline">
+        Novo Pedido
+      </Link>
+      <Link to="/quotes" className="hover:underline">
+        Meus Pedidos
+      </Link>
+      <div className="ml-auto flex items-center gap-3">
         {session?.user?.email && (
-          <span style={{ fontSize: 12, color: "#555" }}>
-            {session.user.email}
-          </span>
+          <span className="text-xs text-gray-600">{session.user.email}</span>
         )}
         {session ? (
-          <button onClick={logout}>Sair</button>
+          <button
+            onClick={logout}
+            className="px-2 py-1 text-sm text-white bg-blue-600 rounded"
+          >
+            Sair
+          </button>
         ) : (
-          <Link to="/login">Login</Link>
+          <Link to="/login" className="hover:underline">
+            Login
+          </Link>
         )}
       </div>
     </nav>

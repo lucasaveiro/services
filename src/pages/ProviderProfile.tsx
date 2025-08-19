@@ -104,31 +104,23 @@ export default function ProviderProfile() {
   if (loading) return null;
 
   return (
-    <div
-      style={{
-        maxWidth: 560,
-        margin: "24px auto",
-        padding: 16,
-        border: "1px solid #eee",
-        borderRadius: 8,
-      }}
-    >
-      <h2>Meu Perfil de Prestador</h2>
-      <div style={{ display: "grid", gap: 8 }}>
+    <div className="max-w-xl mx-auto mt-6 p-4 border border-gray-200 rounded-lg">
+      <h2 className="text-xl font-semibold">Meu Perfil de Prestador</h2>
+      <div className="grid gap-2 mt-4">
         <input
           placeholder="Nome de exibição"
           value={prov.display_name}
           onChange={(e) =>
             setProv((p) => ({ ...p, display_name: e.target.value }))
           }
+          className="p-2 border border-gray-300 rounded"
         />
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 100px", gap: 8 }}
-        >
+        <div className="grid grid-cols-[1fr_100px] gap-2">
           <input
             placeholder="Cidade"
             value={prov.city}
             onChange={(e) => setProv((p) => ({ ...p, city: e.target.value }))}
+            className="p-2 border border-gray-300 rounded"
           />
           <input
             placeholder="UF"
@@ -136,11 +128,10 @@ export default function ProviderProfile() {
             onChange={(e) =>
               setProv((p) => ({ ...p, uf: e.target.value.toUpperCase().slice(0, 2) }))
             }
+            className="p-2 border border-gray-300 rounded"
           />
         </div>
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
-        >
+        <div className="grid grid-cols-2 gap-2">
           <input
             type="number"
             placeholder="Preço/hora"
@@ -151,6 +142,7 @@ export default function ProviderProfile() {
                 hourly_rate: e.target.value ? Number(e.target.value) : null,
               }))
             }
+            className="p-2 border border-gray-300 rounded"
           />
           <input
             type="number"
@@ -162,9 +154,10 @@ export default function ProviderProfile() {
                 service_area_km: e.target.value ? Number(e.target.value) : null,
               }))
             }
+            className="p-2 border border-gray-300 rounded"
           />
         </div>
-        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={prov.accepts_emergency}
@@ -175,13 +168,10 @@ export default function ProviderProfile() {
           Atende emergências
         </label>
         <div>
-          <p style={{ margin: "8px 0 4px" }}>Categorias</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <p className="mt-2 mb-1">Categorias</p>
+          <div className="flex flex-col gap-1">
             {categories.map((c) => (
-              <label
-                key={c.slug}
-                style={{ display: "flex", gap: 4, alignItems: "center" }}
-              >
+              <label key={c.slug} className="flex items-center gap-1">
                 <input
                   type="checkbox"
                   checked={selectedCats.includes(c.slug)}
@@ -198,10 +188,14 @@ export default function ProviderProfile() {
             ))}
           </div>
         </div>
-        <button disabled={disabled} onClick={save}>
+        <button
+          disabled={disabled}
+          onClick={save}
+          className="px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+        >
           Salvar
         </button>
-        {msg && <p style={{ fontSize: 12, color: "#555" }}>{msg}</p>}
+        {msg && <p className="text-xs text-gray-600">{msg}</p>}
       </div>
     </div>
   );
