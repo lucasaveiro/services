@@ -1,7 +1,7 @@
 -- quote_requests table
 create table if not exists public.quote_requests (
 id uuid primary key default gen_random_uuid(),
-user_id uuid not null,
+user_id uuid not null references public.users(id) on delete cascade,
 category_slug text not null,
 description text not null,
 city text not null,
