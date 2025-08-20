@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "./lib/supabase";
 import type { Session } from "@supabase/supabase-js";
+import { getUserRole, type UserRole } from "./lib/auth";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProviderProfile from "./pages/ProviderProfile";
@@ -12,7 +13,13 @@ import ProviderLogin from "./pages/ProviderLogin";
 import Home from "./pages/Home";
 import Protected from "./routes/Protected";
 
-function Navbar({ session, isProvider }: { session: Session | null; isProvider: boolean }) {
+function Navbar({
+  session,
+  role,
+}: {
+  session: Session | null;
+  role: UserRole | null;
+}) {
   const nav = useNavigate();
   const logout = async () => {
     await supabase.auth.signOut();
@@ -23,20 +30,22 @@ function Navbar({ session, isProvider }: { session: Session | null; isProvider: 
       <Link to="/" className="hover:underline">
         Home
       </Link>
-      <Link to="/search" className="hover:underline">
-        Buscar
-      </Link>
-      {session && (
+      {role !== "provider" && (
+        <Link to="/search" className="hover:underline">
+          Buscar
+        </Link>
+      )}
+      {session && role === "provider" && (
         <Link to="/dashboard" className="hover:underline">
           Dashboard
         </Link>
       )}
       {session ? (
-        isProvider ? (
+        role === "provider" ? (
           <Link to="/provider" className="hover:underline">
             Meu Perfil
           </Link>
-        ) : (
+        ) : role === "user" ? (
           <>
             <Link to="/quotes/new" className="hover:underline">
               Novo Pedido
@@ -45,6 +54,10 @@ function Navbar({ session, isProvider }: { session: Session | null; isProvider: 
               Meus Pedidos
             </Link>
           </>
+        ) : (
+          <Link to="/quotes/new" className="hover:underline">
+            Novo Pedido
+          </Link>
         )
       ) : (
         <Link to="/quotes/new" className="hover:underline">
@@ -82,7 +95,7 @@ function Navbar({ session, isProvider }: { session: Session | null; isProvider: 
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
-  const [isProvider, setIsProvider] = useState(false);
+  const [role, setRole] = useState<UserRole | null>(null);
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const {
@@ -92,24 +105,20 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const checkProvider = async () => {
+    const loadRole = async () => {
       if (session?.user?.id) {
-        const { data } = await supabase
-          .from("providers")
-          .select("id")
-          .eq("user_id", session.user.id)
-          .maybeSingle();
-        setIsProvider(!!data);
+        const userRole = await getUserRole(session.user.id);
+        setRole(userRole);
       } else {
-        setIsProvider(false);
+        setRole(null);
       }
     };
-    checkProvider();
+    loadRole();
   }, [session]);
 
   return (
     <>
-      <Navbar session={session} isProvider={isProvider} />
+      <Navbar session={session} role={role} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -118,7 +127,11 @@ export default function App() {
           path="/dashboard"
           element={
             <Protected>
-              <Dashboard email={session?.user?.email || ""} />
+              {role === "provider" ? (
+                <Dashboard email={session?.user?.email || ""} />
+              ) : (
+                <Navigate to="/" replace />
+              )}
             </Protected>
           }
         />
@@ -126,16 +139,18 @@ export default function App() {
           path="/provider"
           element={
             <Protected>
-              {isProvider ? <ProviderProfile /> : <Navigate to="/" replace />}
+              {role === "provider" ? <ProviderProfile /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
-        <Route path="/search" element={<Search />} />
+        <Route
+          path="/search"
+          element={role !== "provider" ? <Search /> : <Navigate to="/" replace />} />
         <Route
           path="/quotes/new"
           element={
             <Protected>
-              {!isProvider ? <NewQuote /> : <Navigate to="/" replace />}
+              {role === "user" ? <NewQuote /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
@@ -143,7 +158,7 @@ export default function App() {
           path="/quotes"
           element={
             <Protected>
-              {!isProvider ? <MyQuotes /> : <Navigate to="/" replace />}
+              {role === "user" ? <MyQuotes /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
