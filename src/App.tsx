@@ -9,7 +9,6 @@ import ProviderProfile from "./pages/ProviderProfile";
 import Search from "./pages/Search";
 import NewQuote from "./pages/NewQuote";
 import MyQuotes from "./pages/MyQuotes";
-import ProviderLogin from "./pages/ProviderLogin";
 import Home from "./pages/Home";
 import Protected from "./routes/Protected";
 
@@ -65,14 +64,6 @@ function Navbar({
         </Link>
       )}
       <div className="ml-auto flex items-center gap-3">
-        {!session && (
-          <Link
-            to="/provider/login"
-            className="text-sm text-gray-600 hover:underline"
-          >
-            Seja um Pestador
-          </Link>
-        )}
         {session?.user?.email && (
           <span className="text-xs text-gray-600">{session.user.email}</span>
         )}
@@ -107,7 +98,7 @@ export default function App() {
   useEffect(() => {
     const loadRole = async () => {
       if (session?.user?.id) {
-        const userRole = await getUserRole(session.user.id);
+        const userRole = await getUserRole();
         setRole(userRole);
       } else {
         setRole(null);
@@ -122,7 +113,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/provider/login" element={<ProviderLogin />} />
         <Route
           path="/dashboard"
           element={
