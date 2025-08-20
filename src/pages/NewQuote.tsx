@@ -10,10 +10,15 @@ const [uf,setUf]=useState("");
 const [times,setTimes]=useState(""); // CSV of ISO datetimes
 const [budget,setBudget]=useState<number|"">("");
 const [msg,setMsg]=useState("");
+const [categories,setCategories]=useState<{ slug:string; name:string }[]>([]);
 
 useEffect(()=>{(async()=>{
-const { data:{ user } } = await supabase.auth.getUser();
+const [{ data:{ user } }, catRes] = await Promise.all([
+supabase.auth.getUser(),
+supabase.from("categories").select("slug, name")
+]);
 if(user) setUid(user.id);
+setCategories(catRes.data||[]);
 })()},[]);
 
 const submit=async(e:React.FormEvent)=>{
@@ -42,7 +47,12 @@ return (
     <div className="max-w-xl mx-auto mt-6 p-4 border border-gray-200 rounded-lg">
     <h2 className="text-xl font-semibold">Novo Pedido de Orçamento</h2>
     <form onSubmit={submit} className="grid gap-2 mt-4">
-    <input className="p-2 border border-gray-300 rounded" placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)} required/>
+    <select className="p-2 border border-gray-300 rounded" value={category} onChange={e=>setCategory(e.target.value)} required>
+    <option value="">Selecione uma categoria</option>
+    {categories.map(c=>(
+      <option key={c.slug} value={c.slug}>{c.name || c.slug}</option>
+    ))}
+    </select>
     <textarea className="p-2 border border-gray-300 rounded" placeholder="Descrição" value={description} onChange={e=>setDescription(e.target.value)} required rows={4}/>
     <div className="grid grid-cols-[1fr_100px] gap-2">
     <input className="p-2 border border-gray-300 rounded" placeholder="Cidade" value={city} onChange={e=>setCity(e.target.value)} required/>
