@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type ProviderRow = {
@@ -14,6 +14,12 @@ const [radiusKm,setRadiusKm]=useState<number|"">("");
 const [loading,setLoading]=useState(false);
 const [results,setResults]=useState<ProviderRow[]>([]);
 const [err,setErr]=useState("");
+const [categories,setCategories]=useState<{ slug:string; name:string }[]>([]);
+
+useEffect(()=>{(async()=>{
+const { data } = await supabase.from("categories").select("slug, name");
+setCategories(data||[]);
+})()},[]);
 
 const run = async ()=>{
 setLoading(true); setErr("");
@@ -38,7 +44,12 @@ return (
     <div className="max-w-3xl mx-auto mt-6 p-4">
     <h2 className="text-xl font-semibold">Buscar Prestadores</h2>
     <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-center mt-4">
-    <input className="p-2 border border-gray-300 rounded" placeholder="category_slug" value={category} onChange={e=>setCategory(e.target.value)}/>
+    <select className="p-2 border border-gray-300 rounded" value={category} onChange={e=>setCategory(e.target.value)}>
+    <option value="">Todas as categorias</option>
+    {categories.map(c=>(
+      <option key={c.slug} value={c.slug}>{c.name || c.slug}</option>
+    ))}
+    </select>
     <input className="p-2 border border-gray-300 rounded" placeholder="city" value={city} onChange={e=>setCity(e.target.value)}/>
     <input className="p-2 border border-gray-300 rounded" type="number" placeholder="radius_km (ignorado)" value={radiusKm} onChange={e=>setRadiusKm(e.target.value?Number(e.target.value):"")}/>
     <button onClick={run} disabled={loading} className="px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-50">{loading?"Buscando...":"Buscar"}</button>
