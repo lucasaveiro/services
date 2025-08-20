@@ -68,7 +68,11 @@ export default function ProviderProfile() {
   }, []);
 
   const disabled = useMemo(
-    () => !prov.display_name || !prov.city || !prov.uf,
+    () =>
+      !prov.display_name ||
+      !prov.city ||
+      !prov.uf ||
+      prov.service_area_km === null,
     [prov]
   );
 
@@ -154,6 +158,8 @@ export default function ProviderProfile() {
                 service_area_km: e.target.value ? Number(e.target.value) : null,
               }))
             }
+            required
+            min={0}
             className="p-2 border border-gray-300 rounded"
           />
         </div>
