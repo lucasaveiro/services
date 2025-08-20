@@ -17,7 +17,7 @@ const Home = () => (
   </div>
 );
 
-function Navbar({ session }: { session: Session | null }) {
+function Navbar({ session, isProvider }: { session: Session | null; isProvider: boolean }) {
   const nav = useNavigate();
   const logout = async () => {
     await supabase.auth.signOut();
@@ -34,15 +34,20 @@ function Navbar({ session }: { session: Session | null }) {
       <Link to="/dashboard" className="hover:underline">
         Dashboard
       </Link>
-      <Link to="/provider" className="hover:underline">
-        Meu Perfil
-      </Link>
-      <Link to="/quotes/new" className="hover:underline">
-        Novo Pedido
-      </Link>
-      <Link to="/quotes" className="hover:underline">
-        Meus Pedidos
-      </Link>
+      {isProvider ? (
+        <Link to="/provider" className="hover:underline">
+          Meu Perfil
+        </Link>
+      ) : (
+        <>
+          <Link to="/quotes/new" className="hover:underline">
+            Novo Pedido
+          </Link>
+          <Link to="/quotes" className="hover:underline">
+            Meus Pedidos
+          </Link>
+        </>
+      )}
       <div className="ml-auto flex items-center gap-3">
         {session?.user?.email && (
           <span className="text-xs text-gray-600">{session.user.email}</span>
@@ -66,6 +71,7 @@ function Navbar({ session }: { session: Session | null }) {
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
+  const [isProvider, setIsProvider] = useState(false);
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const {
@@ -74,9 +80,25 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const checkProvider = async () => {
+      if (session?.user?.id) {
+        const { data } = await supabase
+          .from("providers")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+        setIsProvider(!!data);
+      } else {
+        setIsProvider(false);
+      }
+    };
+    checkProvider();
+  }, [session]);
+
   return (
     <>
-      <Navbar session={session} />
+      <Navbar session={session} isProvider={isProvider} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -92,7 +114,7 @@ export default function App() {
           path="/provider"
           element={
             <Protected>
-              <ProviderProfile />
+              {isProvider ? <ProviderProfile /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
@@ -101,7 +123,7 @@ export default function App() {
           path="/quotes/new"
           element={
             <Protected>
-              <NewQuote />
+              {!isProvider ? <NewQuote /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
@@ -109,7 +131,7 @@ export default function App() {
           path="/quotes"
           element={
             <Protected>
-              <MyQuotes />
+              {!isProvider ? <MyQuotes /> : <Navigate to="/" replace />}
             </Protected>
           }
         />
