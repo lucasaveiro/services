@@ -8,14 +8,9 @@ import ProviderProfile from "./pages/ProviderProfile";
 import Search from "./pages/Search";
 import NewQuote from "./pages/NewQuote";
 import MyQuotes from "./pages/MyQuotes";
+import ProviderLogin from "./pages/ProviderLogin";
+import Home from "./pages/Home";
 import Protected from "./routes/Protected";
-
-const Home = () => (
-  <div className="p-4">
-    <h1 className="text-2xl font-bold">Home</h1>
-    <p className="text-gray-700">Marketplace de Serviços — MVP.</p>
-  </div>
-);
 
 function Navbar({ session, isProvider }: { session: Session | null; isProvider: boolean }) {
   const nav = useNavigate();
@@ -31,24 +26,40 @@ function Navbar({ session, isProvider }: { session: Session | null; isProvider: 
       <Link to="/search" className="hover:underline">
         Buscar
       </Link>
-      <Link to="/dashboard" className="hover:underline">
-        Dashboard
-      </Link>
-      {isProvider ? (
-        <Link to="/provider" className="hover:underline">
-          Meu Perfil
+      {session && (
+        <Link to="/dashboard" className="hover:underline">
+          Dashboard
         </Link>
+      )}
+      {session ? (
+        isProvider ? (
+          <Link to="/provider" className="hover:underline">
+            Meu Perfil
+          </Link>
+        ) : (
+          <>
+            <Link to="/quotes/new" className="hover:underline">
+              Novo Pedido
+            </Link>
+            <Link to="/quotes" className="hover:underline">
+              Meus Pedidos
+            </Link>
+          </>
+        )
       ) : (
-        <>
-          <Link to="/quotes/new" className="hover:underline">
-            Novo Pedido
-          </Link>
-          <Link to="/quotes" className="hover:underline">
-            Meus Pedidos
-          </Link>
-        </>
+        <Link to="/quotes/new" className="hover:underline">
+          Novo Pedido
+        </Link>
       )}
       <div className="ml-auto flex items-center gap-3">
+        {!session && (
+          <Link
+            to="/provider/login"
+            className="text-sm text-gray-600 hover:underline"
+          >
+            Seja um Pestador
+          </Link>
+        )}
         {session?.user?.email && (
           <span className="text-xs text-gray-600">{session.user.email}</span>
         )}
@@ -102,6 +113,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/provider/login" element={<ProviderLogin />} />
         <Route
           path="/dashboard"
           element={
