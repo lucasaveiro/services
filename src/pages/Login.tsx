@@ -7,6 +7,7 @@ const isEmail = (v: string) => /.+@.+\..+/.test(v);
 
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"user" | "provider">("user");
   const [sending, setSending] = useState(false);
 
   const onSubmit = async (e: FormEvent) => {
@@ -16,10 +17,15 @@ export default function Login() {
       return;
     }
     setSending(true);
-    const redirectTo = `${window.location.origin}/dashboard`;
+    const redirectTo = `${window.location.origin}${
+      role === "provider" ? "/provider" : "/"
+    }`;
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: redirectTo },
+      options: {
+        emailRedirectTo: redirectTo,
+        data: { provider_type: role },
+      },
     });
     setSending(false);
     if (error) toastError(error.message);
@@ -34,6 +40,14 @@ export default function Login() {
       <h2 className="text-xl font-semibold">Login</h2>
       <p className="text-gray-700">Receba um link mágico por e-mail.</p>
       <form onSubmit={onSubmit} className="grid gap-2 mt-4">
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value as "user" | "provider")}
+          className="p-2 border border-gray-300 rounded"
+        >
+          <option value="user">Usuário</option>
+          <option value="provider">Prestador</option>
+        </select>
         <input
           type="email"
           required
